@@ -1,0 +1,62 @@
+# SUMO Large-Scale Traffic Simulation Configuration
+# APACC-Sim Toolkit - Default SUMO Parameters
+
+sumo_configuration:
+  binary: "sumo"  # or "sumo-gui" for visualization
+  step_length: 0.01  # 100Hz to match other simulators
+  no_warnings: true
+  seed: 42
+
+network:
+  type: "grid"  # grid, spider, random
+  size: [1000, 1000]  # meters
+  lanes_per_road: 2
+  speed_limit: 50  # km/h default
+  traffic_lights: true
+  
+traffic_flow:
+  total_vehicles: 50
+  ego_vehicles: 1  # Number of controlled vehicles
+  
+  vehicle_types:
+    - id: "passenger"
+      probability: 0.7
+      length: 4.5
+      max_speed: 50
+      accel: 2.6
+      decel: 4.5
+      
+    - id: "bus"
+      probability: 0.1
+      length: 12.0
+      max_speed: 30
+      accel: 1.2
+      decel: 2.0
+      
+    - id: "truck"
+      probability: 0.2
+      length: 8.0
+      max_speed: 40
+      accel: 1.5
+      decel: 3.0
+      
+  traffic_density:
+    distribution: "time_varying"
+    peak_hours: [8, 17]  # 8am and 5pm
+    base_flow: 1000  # vehicles/hour
+    peak_flow: 3000  # vehicles/hour
+    
+  route_generation:
+    method: "random_trips"
+    period: 1.0  # seconds between insertions
+    
+pedestrians:
+  enabled: true
+  number: 20
+  crossing_probability: 0.3
+  
+output:
+  statistics: true
+  emissions: false
+  fcd_output: true  # Floating car data
+  aggregated_period: 60  # seconds

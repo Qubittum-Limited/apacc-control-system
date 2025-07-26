@@ -1,0 +1,40 @@
+# Dockerfile for APACC simulation controller
+FROM python:3.10-slim
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    build-essential \
+    libgl1-mesa-glx \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender-dev \
+    libgomp1 \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set working directory
+WORKDIR /app
+
+# Copy requirements
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy APACC simulation code
+COPY src/ ./src/
+COPY scenarios/ ./scenarios/
+COPY config/ ./config/
+
+# Create directories for results and logs
+RUN mkdir -p /app/results /app/logs
+
+# Set environment variables
+ENV PYTHONPATH=/app
+ENV APACC_CONFIG=/app/config/simulation.yaml
+
+# Entry point
+ENTRYPOINT ["python", "-u"]
+CMD ["src/run_monte_carlo.py"]

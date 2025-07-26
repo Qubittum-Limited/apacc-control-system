@@ -1,0 +1,48 @@
+# MATLAB Symbolic Verification Configuration
+# APACC-Sim Toolkit - Formal Verification Parameters
+
+matlab_engine:
+  startup_options: "-nodesktop -nosplash"
+  timeout: 300  # seconds for verification completion
+  
+verification_properties:
+  stability:
+    enabled: true
+    method: "lyapunov"
+    tolerance: 1e-6
+    region_of_attraction: 10.0
+    
+  robustness:
+    enabled: true
+    method: "h_infinity"
+    disturbance_bound: 0.1
+    performance_weight: 1.0
+    
+  constraints:
+    enabled: true
+    state_bounds:
+      position: [-100, 100]  # meters
+      velocity: [0, 30]      # m/s
+      acceleration: [-5, 3]  # m/s^2
+      yaw_rate: [-0.5, 0.5]  # rad/s
+      
+    control_bounds:
+      steering: [-0.5, 0.5]  # radians
+      throttle: [0, 1]       # normalized
+      brake: [0, 1]          # normalized
+      
+  reachability:
+    enabled: false  # Computationally expensive
+    time_horizon: 5.0
+    grid_resolution: 0.1
+    
+symbolic_analysis:
+  simplification: true
+  parallel_execution: true
+  save_workspace: true
+  
+output:
+  format: "mat"  # MATLAB native format
+  include_plots: true
+  generate_report: true
+  latex_equations: true

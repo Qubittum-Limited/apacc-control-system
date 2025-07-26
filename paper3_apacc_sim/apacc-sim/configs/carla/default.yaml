@@ -1,0 +1,76 @@
+# CARLA High-Fidelity Simulation Configuration
+# APACC-Sim Toolkit - Default CARLA Parameters
+
+carla_server:
+  host: "localhost"
+  port: 2000
+  timeout: 10.0
+  synchronous_mode: true
+  fixed_delta_seconds: 0.01  # 100Hz simulation
+
+world:
+  map: "Town04"  # Urban environment with multiple lanes
+  weather_presets:
+    - preset: "ClearNoon"
+      probability: 0.3
+    - preset: "CloudyNoon"
+      probability: 0.2
+    - preset: "WetNoon"
+      probability: 0.2
+    - preset: "HardRainNoon"
+      probability: 0.15
+    - preset: "ClearSunset"
+      probability: 0.15
+
+sensors:
+  cameras:
+    - type: "sensor.camera.rgb"
+      position: [2.0, 0.0, 1.4]  # x, y, z relative to vehicle
+      rotation: [0.0, 0.0, 0.0]   # pitch, yaw, roll
+      fov: 90
+      resolution: [1920, 1080]
+      
+    - type: "sensor.camera.semantic_segmentation"
+      position: [2.0, 0.0, 1.4]
+      rotation: [0.0, 0.0, 0.0]
+      fov: 90
+      resolution: [1280, 720]
+      
+  lidar:
+    type: "sensor.lidar.ray_cast"
+    position: [0.0, 0.0, 2.5]
+    rotation: [0.0, 0.0, 0.0]
+    channels: 64
+    range: 100.0
+    rotation_frequency: 10
+    points_per_second: 1000000
+    
+  radar:
+    - type: "sensor.other.radar"
+      position: [2.0, 0.0, 1.0]
+      rotation: [0.0, 0.0, 0.0]
+      horizontal_fov: 30
+      vertical_fov: 30
+      
+    - type: "sensor.other.radar"
+      position: [-2.0, -0.8, 1.0]
+      rotation: [0.0, 180.0, 0.0]
+      horizontal_fov: 90
+      vertical_fov: 30
+
+traffic:
+  number_of_vehicles: 30
+  number_of_pedestrians: 10
+  vehicle_generation_distance: 50.0
+  pedestrian_generation_distance: 30.0
+  
+physics:
+  substeps: 10
+  max_substep_delta_time: 0.001
+  enable_physics: true
+  
+data_collection:
+  save_raw_data: false
+  save_rgb_images: true
+  save_lidar_points: true
+  metrics_frequency: 10  # Hz

@@ -1,0 +1,58 @@
+# Monte Carlo Statistical Validation Configuration
+# APACC-Sim Toolkit - Default Monte Carlo Parameters
+
+simulation:
+  name: "monte_carlo_default"
+  runs: 10000
+  seed: 42  # Deterministic seed for reproducibility
+  parallel_workers: -1  # -1 for auto-detect CPU cores
+  checkpoint_interval: 1000  # Save progress every N runs
+
+scenario_parameters:
+  # Environmental conditions
+  weather:
+    distribution: "beta"
+    alpha: 2.0
+    beta: 5.0
+    categories: ["clear", "rain", "fog", "snow"]
+    
+  lighting:
+    distribution: "categorical"
+    probabilities: [0.4, 0.3, 0.2, 0.1]  # day, dusk, night, dawn
+    
+  # Traffic parameters
+  vehicle_density:
+    distribution: "poisson"
+    lambda: 15
+    min: 5
+    max: 50
+    
+  pedestrian_density:
+    distribution: "poisson"
+    lambda: 5
+    min: 0
+    max: 20
+    
+  # System degradation
+  sensor_failures:
+    distribution: "bernoulli"
+    probability: 0.02
+    types: ["camera", "lidar", "radar", "gps"]
+    
+  communication_delay:
+    distribution: "exponential"
+    lambda: 0.1
+    trigger_probability: 0.05
+    
+# Scenario constraints
+constraints:
+  episode_duration: 120  # seconds
+  map_regions: ["urban", "suburban", "highway"]
+  speed_limits: [30, 50, 70, 90]  # km/h
+  
+# Output configuration
+output:
+  format: "parquet"  # parquet, hdf5, csv
+  compression: "snappy"
+  include_raw_data: false
+  metrics_only: true
