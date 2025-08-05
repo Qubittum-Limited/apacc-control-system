@@ -23,10 +23,9 @@ It also accompanies the following peer-reviewed works:
 **DOI:** [10.1109/ACCESS.2025.0432816](https://doi.org/10.1109/ACCESS.2025.0432816)  
 📁 **Code folder:** `/quantitative_validation_of_apacc_code`
 
-### 📘 The Aeronautical Journal (Under Review)
-**Title:** *APACC-Sim: An Open-Source Toolkit for Validating Neuro-Symbolic Control Architectures in Safety-Critical Autonomous Systems*  
-📁 Code: `/apacc_sim_toolkit`
-
+📘 The Aeronautical Journal (Under Review)  
+**Title:** APACC-Sim: An Open-Source Toolkit for Validating Neuro-Symbolic Control Architectures in Safety-Critical Autonomous Systems  
+📁 **Code folder:** `/apacc_sim_toolkit`
 ---
 
 ## 🔐 Patent Coverage
@@ -81,5 +80,6 @@ We offer flexible licensing options tailored to enterprise, automotive, and defe
 /apacc_sim_toolkit/                       # Paper 3: Modular APACC-Sim engine
 LICENSE.txt                               # Dual-license (MIT-style with commercial clause)
 README.md                                 # You're reading it.
+
 
 
