@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.8475.svg)](https://doi.org/10.5281/zenodo.8475)
+
 ﻿# APACC Validation & Simulation Toolkit
 
 ## 🚘 Companion to PhD Thesis and International Patent Family
@@ -79,3 +81,4 @@ We offer flexible licensing options tailored to enterprise, automotive, and defe
 /apacc_sim_toolkit/                       # Paper 3: Modular APACC-Sim engine
 LICENSE.txt                               # Dual-license (MIT-style with commercial clause)
 README.md                                 # You're reading it.
+
