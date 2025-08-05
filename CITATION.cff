@@ -1,0 +1,39 @@
+cff-version: 1.2.0
+message: "If you use this toolkit, please cite it using the metadata below."
+title: "APACC Control System Toolkit"
+version: "1.0.1"
+doi: 10.5281/zenodo.8475
+date-released: 2025-08-05
+authors:
+  - family-names: Frangou
+    given-names: George J.
+    orcid: https://orcid.org/0000-0003-XXXX-XXXX
+    affiliation: Cranfield University; Qubittum Limited
+license: MIT
+repository-code: https://github.com/Qubittum-Limited/apacc-control-system
+keywords:
+  - APACC
+  - anticipatory control
+  - neuro-symbolic AI
+  - fuzzy logic
+  - ISO 26262
+  - explainable AI
+  - autonomous systems
+references:
+  - type: article
+    title: Quantitative Validation of Artificial Precognition Adaptive Cognised Control
+    authors:
+      - family-names: Frangou
+        given-names: George J.
+    journal: IEEE Access
+    year: 2025
+    note: Under review
+
+  - type: article
+    title: APACC-Sim: An Open-Source Toolkit for Validating Neuro-Symbolic Control Architectures in Safety-Critical Autonomous Systems
+    authors:
+      - family-names: Frangou
+        given-names: George J.
+    journal: The Aeronautical Journal
+    year: 2025
+    note: Under review
