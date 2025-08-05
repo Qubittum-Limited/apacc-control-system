@@ -18,10 +18,10 @@ This toolkit supports George J. Frangou’s 2025 PhD thesis:
 
 It also accompanies the following peer-reviewed works:
 
-### 📘 IEEE Access (Published)
-**Title:** *Quantitative Validation of Artificial Precognition Adaptive Cognised Control*  
+📘 IEEE Access (Published)  
+**Title:** Quantitative Validation of Artificial Precognition Adaptive Cognised Control  
 **DOI:** [10.1109/ACCESS.2025.0432816](https://doi.org/10.1109/ACCESS.2025.0432816)  
-📁 Code: `/quantitative_validation_of_apacc_code`
+📁 **Code folder:** `/quantitative_validation_of_apacc_code`
 
 ### 📘 The Aeronautical Journal (Under Review)
 **Title:** *APACC-Sim: An Open-Source Toolkit for Validating Neuro-Symbolic Control Architectures in Safety-Critical Autonomous Systems*  
@@ -81,4 +81,5 @@ We offer flexible licensing options tailored to enterprise, automotive, and defe
 /apacc_sim_toolkit/                       # Paper 3: Modular APACC-Sim engine
 LICENSE.txt                               # Dual-license (MIT-style with commercial clause)
 README.md                                 # You're reading it.
+
 
