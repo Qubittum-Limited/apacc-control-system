@@ -1,0 +1,73 @@
+# requirements_apacc_valid_dev.txt
+# APACC Validation Framework - Development Dependencies
+# Paper: "Quantitative Validation of Artificial Precognition Adaptive Cognised Control"
+# Install production requirements first: pip install -r requirements_apacc_valid.txt
+# Then install dev requirements: pip install -r requirements_apacc_valid_dev.txt
+
+# ==============================================================================
+# TESTING FRAMEWORKS
+# ==============================================================================
+pytest==7.4.0              # Testing framework for validation suite
+pytest-cov==4.1.0          # Coverage for 24,500 scenarios
+pytest-mock==3.11.1        # Mocking for sensor failure injection
+pytest-benchmark==4.0.0    # Performance benchmarking for latency tests
+pytest-asyncio==0.21.1     # Async testing for real-time control
+coverage==7.2.7            # Code coverage measurement
+
+# ==============================================================================
+# CODE QUALITY AND LINTING
+# ==============================================================================
+black==23.7.0              # Code formatter
+flake8==6.0.0              # Style guide enforcement
+pylint==2.17.5             # Static code analysis
+mypy==1.4.1                # Static type checking
+isort==5.12.0              # Import statement sorting
+
+# ==============================================================================
+# DOCUMENTATION
+# ==============================================================================
+sphinx==7.1.2              # Documentation generator
+sphinx-rtd-theme==1.3.0    # ReadTheDocs theme
+sphinx-autodoc-typehints==1.24.0  # Type hint support in docs
+myst-parser==2.0.0         # Markdown support for Sphinx
+
+# ==============================================================================
+# JUPYTER DEVELOPMENT
+# ==============================================================================
+notebook==7.0.2            # Jupyter notebooks for analysis
+jupyterlab==4.0.3          # JupyterLab interface
+ipykernel==6.25.0          # IPython kernel
+ipywidgets==8.1.0          # Interactive widgets for parameter tuning
+nbconvert==7.7.3           # Export notebooks to papers
+nbformat==5.9.2            # Notebook format library
+jupyter-contrib-nbextensions==0.7.0  # Additional notebook tools
+
+# ==============================================================================
+# PROFILING AND DEBUGGING
+# ==============================================================================
+line-profiler==4.0.3       # Line-by-line profiling
+memory-profiler==0.61.0    # Memory usage profiling
+py-spy==0.3.14             # Sampling profiler
+ipdb==0.13.13              # IPython debugger
+
+# ==============================================================================
+# VERSION CONTROL HELPERS
+# ==============================================================================
+pre-commit==3.3.3          # Git hook management
+commitizen==3.5.4          # Commit message standardization
+
+# ==============================================================================
+# SIMULATION ANALYSIS TOOLS
+# ==============================================================================
+rosbag==1.15.14            # ROS bag file reading for CARLA data
+bagpy==0.5                 # ROS bag to pandas conversion
+plotly==5.16.1             # Interactive plots for paper figures
+bokeh==3.2.2               # Alternative interactive visualization
+dash==2.12.1               # Dashboard for real-time monitoring
+
+# ==============================================================================
+# STATISTICAL ANALYSIS
+# ==============================================================================
+pingouin==0.5.3            # Statistical tests and effect sizes
+scikit-posthocs==0.7.0     # Post-hoc tests for ANOVA
+bootstrapped==0.0.2        # Bootstrap confidence intervals

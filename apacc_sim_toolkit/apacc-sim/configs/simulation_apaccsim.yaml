@@ -1,0 +1,292 @@
+# simulation_apaccsim.yaml
+#
+# Configuration file for APACC-Sim validation campaigns
+# Defines scenarios, controllers, environments, and metrics
+#
+# Author: George Frangou
+# Institution: Cranfield University
+
+# Global configuration
+random_seed: 42  # For reproducibility
+output_format: hdf5  # Primary output format
+
+# Parallel execution settings
+parallel:
+  enabled: true
+  workers: auto  # auto = number of CPU cores
+  backend: ray  # ray or multiprocessing
+  
+# Simulation settings
+simulation:
+  num_scenarios: 24500  # Total scenarios as per paper
+  scenario_distribution:
+    monte_carlo: 10000
+    carla: 10000
+    sumo: 2000
+    matlab: 2500
+  
+  # Scenario generation parameters
+  scenario_types:
+    - name: highway
+      weight: 0.4
+      speed_range: [80, 130]  # km/h
+    - name: urban
+      weight: 0.4
+      speed_range: [20, 60]
+    - name: intersection
+      weight: 0.2
+      speed_range: [0, 40]
+  
+  # Environmental conditions
+  weather_conditions:
+    - name: clear
+      probability: 0.6
+      visibility: 1.0
+      friction: 1.0
+    - name: rain
+      probability: 0.2
+      visibility: 0.7
+      friction: 0.8
+    - name: fog
+      probability: 0.1
+      visibility: 0.3
+      friction: 0.9
+    - name: night
+      probability: 0.1
+      visibility: 0.5
+      friction: 1.0
+  
+  # Traffic density parameters
+  traffic_density:
+    distribution: beta
+    alpha: 2
+    beta: 5
+    min_vehicles: 10
+    max_vehicles: 200
+  
+  # Sensor failure injection
+  sensor_failures:
+    enabled: true
+    failure_probability: 0.05
+    failure_modes:
+      - type: camera_occlusion
+        probability: 0.4
+      - type: lidar_dropout
+        probability: 0.3
+      - type: radar_interference
+        probability: 0.3
+
+# Controller configurations
+controllers:
+  apacc:
+    type: neuro_symbolic
+    symbolic_layer:
+      num_rules: 150
+      inference_engine: fuzzy
+      rule_categories:
+        - safety_critical: 50
+        - performance: 50
+        - comfort: 50
+    numeric_layer:
+      type: mpc
+      horizon: 2.0  # seconds
+      control_rate: 100  # Hz
+      constraints:
+        max_acceleration: 4.0  # m/s²
+        max_deceleration: -8.0  # m/s²
+        max_steering_rate: 0.5  # rad/s
+    explainability:
+      enabled: true
+      log_decisions: true
+      
+  mpc:
+    type: model_predictive_control
+    horizon: 2.0
+    control_rate: 50
+    cost_weights:
+      tracking: 1.0
+      control_effort: 0.1
+      comfort: 0.05
+      
+  drl:
+    type: deep_reinforcement_learning
+    model: ppo
+    network_architecture:
+      hidden_layers: [256, 256, 128]
+      activation: relu
+    observation_space: 128
+    action_space: 2  # steering, acceleration
+    
+  pid:
+    type: proportional_integral_derivative
+    gains:
+      lateral:
+        p: 1.0
+        i: 0.1
+        d: 0.05
+      longitudinal:
+        p: 0.8
+        i: 0.05
+        d: 0.02
+
+# Environment configurations
+environments:
+  - monte_carlo
+  - carla
+  - sumo
+  - matlab
+
+# Monte Carlo specific settings
+monte_carlo:
+  physics_model: bicycle
+  timestep: 0.01  # seconds
+  max_simulation_time: 60  # seconds
+  importance_sampling:
+    enabled: true
+    target_events:
+      - near_collision
+      - emergency_braking
+      - lane_departure
+
+# CARLA specific settings
+carla:
+  server:
+    host: localhost
+    port: 2000
+    timeout: 30.0
+  graphics:
+    quality_level: Low  # Low, Medium, High, Epic
+    no_rendering_mode: false
+  sensors:
+    rgb_camera:
+      enabled: true
+      width: 1920
+      height: 1080
+      fov: 90
+      position: [2.0, 0.0, 1.5]  # x, y, z relative to vehicle
+    lidar:
+      enabled: true
+      channels: 64
+      range: 100.0
+      points_per_second: 1400000
+      rotation_frequency: 20
+      position: [0.0, 0.0, 2.5]
+    radar:
+      enabled: true
+      horizontal_fov: 30
+      vertical_fov: 30
+      range: 100
+      position: [3.0, 0.0, 1.0]
+    semantic_segmentation:
+      enabled: true
+      width: 1280
+      height: 720
+  synchronous_mode: true
+  fixed_delta_seconds: 0.05
+
+# SUMO specific settings
+sumo:
+  network_files:
+    - networks/highway_network.net.xml
+    - networks/urban_grid.net.xml
+    - networks/intersection_complex.net.xml
+  traffic_generation:
+    method: random_trips
+    trip_probability: 0.3
+    vehicle_types:
+      - id: passenger
+        probability: 0.7
+        max_speed: 50
+      - id: truck
+        probability: 0.2
+        max_speed: 30
+      - id: bus
+        probability: 0.1
+        max_speed: 25
+  step_length: 0.1  # seconds
+  collision_action: warn
+
+# MATLAB verification settings
+matlab:
+  engine_timeout: 300  # seconds
+  verification_methods:
+    - lyapunov_stability
+    - reachability_analysis
+    - robustness_margins
+  stability_analysis:
+    linearization_points: 10
+    region_of_attraction: true
+  robustness:
+    uncertainty_level: 0.1
+    disturbance_bounds: [-1.0, 1.0]
+  constraints:
+    - type: collision_avoidance
+      safety_distance: 5.0  # meters
+    - type: lane_keeping
+      max_deviation: 0.5  # meters
+    - type: speed_limits
+      enforce: true
+
+# Metrics to collect
+metrics:
+  safety:
+    - collision_rate
+    - time_to_collision
+    - minimum_distance
+    - lane_deviation
+    - emergency_interventions
+  performance:
+    - control_latency
+    - trajectory_error
+    - fuel_efficiency
+    - passenger_comfort
+  computational:
+    - cpu_usage
+    - memory_usage
+    - gpu_utilization
+    - inference_time
+  explainability:
+    - rule_activation_frequency
+    - decision_confidence
+    - uncertainty_quantification
+
+# Certification settings
+certification:
+  enabled: true
+  standards:
+    - iso26262:
+        asil_level: D
+        diagnostic_coverage_target: 0.99
+    - iso21448:
+        sotif_analysis: true
+        scenario_coverage_target: 0.95
+  evidence_generation:
+    test_reports: true
+    traceability_matrix: true
+    hazard_analysis: true
+    
+# Data management
+data_management:
+  compression: gzip
+  checkpoint_interval: 1000  # scenarios
+  keep_raw_data: false
+  aggregate_only: false
+  
+# Logging configuration
+logging:
+  level: INFO
+  handlers:
+    - console
+    - file
+  file_rotation:
+    max_bytes: 10485760  # 10MB
+    backup_count: 5
+  performance_profiling: false
+
+# Experiment metadata
+metadata:
+  project: "APACC-Sim Validation"
+  author: "George Frangou"
+  institution: "Cranfield University"
+  version: "1.0"
+  description: "Comprehensive validation of neuro-symbolic control architectures"

@@ -1,0 +1,136 @@
+# requirements_apacc_valid.txt
+# APACC Validation Framework - Production Dependencies
+# Paper: "Quantitative Validation of Artificial Precognition Adaptive Cognised Control"
+# DOI: https://doi.org/10.5281/zenodo.8475
+# PhD Thesis - Cranfield University
+# Author: George Frangou
+# Generated: 2025-01-28
+# Python Version: 3.10 (as specified in paper methods)
+
+# ==============================================================================
+# CORE SCIENTIFIC COMPUTING
+# ==============================================================================
+numpy==1.24.3              # Numerical computing - used for Monte Carlo stochastic modeling
+scipy==1.11.1              # Statistical analysis - explicitly mentioned in paper
+pandas==2.0.3              # Data manipulation for 24,500 scenario analysis
+statsmodels==0.14.0        # Statistical methods - mentioned for ANOVA, Tukey HSD
+PyYAML==6.0.1              # Configuration file parsing
+
+# ==============================================================================
+# VISUALIZATION AND PLOTTING
+# ==============================================================================
+matplotlib==3.7.2          # Performance visualization and analysis plots
+seaborn==0.12.2            # Statistical visualization for validation results
+
+# ==============================================================================
+# TRAFFIC SIMULATION - CARLA
+# ==============================================================================
+# CRITICAL: Paper specifies CARLA 0.9.14 with custom modifications
+# High-fidelity physics simulation with PhysX engine at 100Hz
+carla==0.9.14              # CARLA autonomous driving simulator Python API
+
+# ==============================================================================
+# TRAFFIC SIMULATION - SUMO
+# ==============================================================================
+# Paper specifies SUMO 1.12.0 with TraCI interface
+# Large-scale traffic modeling with 50 average vehicles
+traci==1.12.0              # Traffic Control Interface for SUMO - version matched
+sumolib==1.12.0            # SUMO utilities for network generation
+
+# ==============================================================================
+# MATLAB INTEGRATION
+# ==============================================================================
+# Paper specifies MATLAB R2023b for mathematical validation
+# Used for: Fuzzy Logic Toolbox, custom Type-2 extensions, QP solver
+# WARNING: matlab.engine requires manual installation from MATLAB directory
+# matlab.engine            # EXCLUDED - Manual install required
+
+# ==============================================================================
+# GPU ACCELERATION
+# ==============================================================================
+# Paper mentions GPU-accelerated MPC with NVIDIA RTX 3080
+# CUDA toolkit required for GPU operations (not pip installable)
+cupy==12.2.0               # GPU arrays for CUDA acceleration
+pycuda==2022.2.2           # Python wrapper for CUDA
+
+# ==============================================================================
+# OPTIMIZATION SOLVERS
+# ==============================================================================
+# Paper mentions OSQP backend for QP solver, IPOPT for MPC baseline
+osqp==0.6.3                # Operator Splitting QP solver
+cvxpy==1.3.2               # Convex optimization framework
+cyipopt==1.2.0             # Python wrapper for IPOPT solver
+
+# ==============================================================================
+# PARALLEL COMPUTING
+# ==============================================================================
+# Paper mentions Parallel Computing across 8 cores
+joblib==1.3.2              # Parallel processing for Monte Carlo scenarios
+multiprocessing-logging==0.3.4  # Logging for parallel processes
+
+# ==============================================================================
+# FUZZY LOGIC AND TYPE-2 FUZZY
+# ==============================================================================
+# Paper specifies Type-2 fuzzy cognitive mapping with 50 base rules
+scikit-fuzzy==0.4.2        # Fuzzy logic toolkit
+interval==1.5.0            # Interval arithmetic for Type-2 fuzzy sets
+
+# ==============================================================================
+# DEEP LEARNING BASELINES
+# ==============================================================================
+# Paper implements SAC and PPO baselines for comparison
+# Training: 10M environment steps in CARLA
+torch==2.0.1               # PyTorch for DRL implementations
+stable-baselines3==2.1.0   # SAC and PPO implementations
+gymnasium==0.29.1          # RL environment interface
+
+# ==============================================================================
+# SYSTEM MONITORING
+# ==============================================================================
+# Paper tracks GPU utilization, memory usage, thermal metrics
+nvidia-ml-py==12.535.77    # NVIDIA Management Library bindings
+psutil==5.9.5              # CPU and memory monitoring
+py3nvml==0.2.7             # Additional NVIDIA GPU monitoring
+
+# ==============================================================================
+# DOCKER AND DEPLOYMENT
+# ==============================================================================
+# Paper mentions Docker containers for reproducibility
+docker==6.1.3              # Docker SDK for container management
+docker-compose==1.29.2     # Multi-container orchestration
+
+# ==============================================================================
+# DATA MANAGEMENT
+# ==============================================================================
+# Paper generates 2.1TB of simulation data
+h5py==3.9.0                # HDF5 for large dataset storage
+zarr==2.16.0               # Chunked array storage for big data
+dask==2023.8.0             # Parallel computing for large datasets
+
+# ==============================================================================
+# ADDITIONAL DEPENDENCIES FROM PAPER
+# ==============================================================================
+Pillow==10.0.0             # Image processing for camera sensors
+opencv-python==4.8.0.76    # Computer vision for sensor processing
+shapely==2.0.1             # Geometric operations for collision detection
+networkx==3.1              # Graph algorithms for traffic networks
+tqdm==4.66.1               # Progress bars for long simulations
+
+# ==============================================================================
+# CRITICAL VERSION NOTES
+# ==============================================================================
+# 1. Python 3.10 as specified in paper (not 3.8 as previously noted)
+# 2. CARLA 0.9.14 requires specific Python version compatibility
+# 3. MATLAB R2023b required for mathematical validation
+# 4. NVIDIA RTX 3080 or equivalent for GPU acceleration
+# 5. Diophantine Frequency Synthesis requires 100Hz control frequency
+# 6. Type-2 fuzzy implementation requires custom MATLAB extensions
+
+# ==============================================================================
+# INSTALLATION ORDER
+# ==============================================================================
+# 1. Install CUDA toolkit and drivers separately
+# 2. pip install -r requirements_apacc_valid.txt
+# 3. Install matlab.engine from MATLAB installation
+# 4. Verify CARLA server version matches client (0.9.14)
+# 5. Set SUMO_HOME environment variable

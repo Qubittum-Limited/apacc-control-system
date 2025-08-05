@@ -1,0 +1,370 @@
+# APACC Validation Framework Configuration
+# =========================================
+# Paper: Quantitative Validation of Artificial Precognition Adaptive Cognised Control
+# Author: George Frangou
+# Institution: Cranfield University
+# DOI: https://doi.org/10.5281/zenodo.8475
+#
+# This configuration file defines all runtime parameters for the APACC validation suite,
+# including scenario counts, environment settings, controller parameters, and baseline comparisons.
+
+# Simulation Parameters
+# ---------------------
+# Defines the scope and scale of validation experiments across all environments
+simulation:
+  # Monte Carlo Statistical Validation
+  monte_carlo:
+    scenarios: 10000              # Total number of randomized scenarios
+    parallel_workers: 8           # Number of parallel processing cores
+    random_seed: 42              # For reproducibility
+    scenario_parameters:
+      vehicle_count_lambda: 15    # Poisson distribution parameter for vehicles
+      pedestrian_count_lambda: 5  # Poisson distribution parameter for pedestrians
+      weather_alpha: 2           # Beta distribution alpha for weather severity
+      weather_beta: 5            # Beta distribution beta for weather severity
+      sensor_failure_prob: 0.02  # Probability of sensor dropout
+      comm_delay_lambda: 0.1     # Exponential distribution for communication delays
+    duration_range: [30, 120]    # Scenario duration range in seconds
+    physics_update_hz: 1000      # Physics simulation frequency
+
+  # CARLA High-Fidelity Physics Simulation
+  carla:
+    episodes: 10000              # Total number of CARLA episodes
+    default_scenario: urban_8lane # Default scenario map
+    available_scenarios:
+      - urban_8lane              # Dense urban environment with 8-lane roads
+      - highway_merge            # Highway on-ramp merging scenario
+      - intersection_4way        # Complex 4-way intersection
+      - residential_narrow       # Narrow residential streets
+      - parking_garage          # Multi-level parking structure
+    episode_timeout: 300         # Maximum episode duration in seconds
+    synchronous_mode: true       # Use synchronous simulation for determinism
+    fixed_delta_seconds: 0.01    # 100Hz control frequency compatibility
+
+  # SUMO Large-Scale Traffic Simulation
+  sumo:
+    duration: 300                # Simulation duration in seconds
+    traffic_density: medium      # Default traffic density level
+    density_levels:
+      low: 20                    # Vehicles per km
+      medium: 50                 # Vehicles per km
+      high: 80                   # Vehicles per km
+      congested: 120            # Vehicles per km
+    network_size: [5, 15]        # Min/max intersections in generated networks
+    ego_vehicles: 10             # Number of APACC-controlled vehicles
+    simulation_step: 0.01        # 100Hz compatibility
+    traffic_model: Krauss        # Car-following model
+
+  # MATLAB Mathematical Verification
+  matlab:
+    test_cases:
+      # Fuzzy Logic Validation
+      - type2_fuzzy_inference     # Type-2 fuzzy cognitive mapping validation
+      - fuzzy_rule_coverage       # Rule base completeness check
+      - membership_function_test  # Fuzzy membership function properties
+      
+      # Optimization Validation
+      - qp_solver_convergence     # Quadratic programming solver validation
+      - mpc_horizon_analysis      # Model predictive control horizon testing
+      - constraint_satisfaction   # Dynamic constraint verification
+      
+      # Stability Analysis
+      - lyapunov_stability       # Lyapunov stability verification
+      - h_infinity_robustness    # H∞ robustness analysis
+      - bellman_optimality       # Bellman equation satisfaction
+      
+      # Integration Testing
+      - diophantine_frequency    # Frequency synthesis validation
+      - sensor_fusion_accuracy   # Multi-sensor integration testing
+      - latency_bounds_check     # Real-time performance validation
+    
+    validation_tolerance: 1e-6   # Numerical tolerance for mathematical tests
+    monte_carlo_samples: 1000    # Samples for statistical validation
+
+  # Baseline Controller Comparison
+  baseline_comparison:
+    environment: carla           # Primary environment for comparison
+    episodes_per_controller: 1000 # Episodes to run for each baseline
+    metrics_to_compare:
+      - collision_rate
+      - average_latency_ms
+      - trajectory_smoothness
+      - rule_activation_rate
+      - computational_cost
+    statistical_tests:
+      - anova                    # One-way ANOVA
+      - tukey_hsd               # Post-hoc analysis
+      - cohens_d                # Effect size calculation
+
+# APACC Controller Configuration
+# ------------------------------
+# Core parameters for the Artificial Precognition Adaptive Cognised Control system
+apacc:
+  # Control Architecture
+  controller_type: dual_layer    # Neuro-symbolic dual-layer architecture
+  symbolic_layer:
+    type: type2_fuzzy           # Type-2 fuzzy cognitive mapping
+    rule_count: 50              # Total fuzzy rules
+    rule_categories:
+      pedestrian_proximity: 12   # Pedestrian safety rules
+      lane_keeping: 10          # Lane adherence rules
+      collision_avoidance: 15   # Emergency maneuver rules
+      intersection_handling: 8   # Traffic light and yield rules
+      weather_adaptation: 5      # Weather-based adaptations
+    inference_time_ms: 0.92     # Average symbolic layer latency
+    
+  numeric_layer:
+    type: gpu_accelerated_mpc   # GPU-accelerated model predictive control
+    prediction_horizon: 20       # 2 seconds at 100Hz
+    control_horizon: 5          # 0.5 seconds
+    state_dimensions: 12        # [x,y,z,vx,vy,vz,ax,ay,az,yaw,pitch,roll]
+    control_dimensions: 3       # [steering, throttle, brake]
+    qp_solver: osqp            # Quadratic programming solver
+    warm_start: true           # Use previous solution as initial guess
+    
+  # Performance Parameters
+  control_frequency: 100        # Hz - main control loop frequency
+  gpu_acceleration: true        # Enable CUDA acceleration
+  gpu_device_id: 0             # CUDA device index
+  max_gpu_memory_gb: 4.0       # Maximum GPU memory allocation
+  
+  # Safety Parameters
+  safety_margin_m: 2.0         # Minimum safe distance
+  ttc_threshold_s: 2.0         # Time-to-collision threshold
+  max_deceleration_mps2: 8.0   # Emergency braking limit
+  max_lateral_accel_mps2: 4.0  # Cornering limit
+
+# Baseline Controllers Configuration
+# ----------------------------------
+# Configuration for comparison controllers
+baselines:
+  # Traditional PID Controller
+  pid:
+    enabled: true
+    scenario: urban_8lane
+    longitudinal:
+      kp: 0.5                   # Proportional gain
+      ki: 0.1                   # Integral gain
+      kd: 0.2                   # Derivative gain
+    lateral:
+      kp: 0.8                   # Pure pursuit proportional
+      ki: 0.05                  # Pure pursuit integral
+      kd: 0.3                   # Pure pursuit derivative
+    anti_windup: true
+    derivative_filter_tau: 0.1
+    
+  # Model Predictive Control
+  mpc:
+    enabled: true
+    scenario: urban_8lane
+    prediction_horizon: 20      # Same as APACC for fair comparison
+    control_horizon: 5
+    solver: ipopt              # Interior point optimizer
+    max_iterations: 100
+    cost_weights:
+      position_error: 1.0
+      velocity_error: 0.5
+      control_effort: 0.1
+      terminal_cost: 10.0
+    
+  # Deep RL - Soft Actor-Critic
+  drl_sac:
+    enabled: true
+    scenario: urban_8lane
+    model_path: models/sac_urban_10M.pt
+    network_architecture:
+      conv_layers: 4            # CNN encoder layers
+      hidden_units: [256, 256]  # MLP hidden layers
+      activation: relu
+    observation_space:
+      cameras: 6                # RGB camera inputs
+      lidar: true              # Include LiDAR
+      radar: true              # Include radar
+    automatic_entropy_tuning: true
+    
+  # Deep RL - Proximal Policy Optimization
+  drl_ppo:
+    enabled: true
+    scenario: urban_8lane
+    model_path: models/ppo_urban_10M.pt
+    network_architecture:
+      conv_layers: 4
+      hidden_units: [256, 256]
+      activation: tanh
+    ppo_parameters:
+      clip_range: 0.2
+      value_coefficient: 0.5
+      entropy_coefficient: 0.01
+    gae_lambda: 0.95           # Generalized advantage estimation
+
+# Environment-Specific Configuration
+# ----------------------------------
+# Settings for each simulation environment
+environments:
+  # CARLA Configuration
+  carla:
+    enabled: true
+    host: localhost             # CARLA server address
+    port: 2000                 # CARLA server port
+    timeout: 10.0              # Connection timeout in seconds
+    scenario_directory: scenarios/carla
+    
+    # Sensor Configuration
+    sensors:
+      cameras:
+        count: 6
+        resolution: [1920, 1080]
+        fov: 90                # Field of view in degrees
+        positions:             # Relative to vehicle center
+          - [2.0, 0.0, 1.5]   # Front center
+          - [0.0, -1.0, 1.5]  # Left side
+          - [0.0, 1.0, 1.5]   # Right side
+          - [-2.0, 0.0, 1.5]  # Rear center
+          - [1.0, -1.0, 1.5]  # Front left
+          - [1.0, 1.0, 1.5]   # Front right
+          
+      lidar:
+        model: velodyne_vlp32c
+        channels: 32
+        range: 100.0           # meters
+        rotation_frequency: 10 # Hz
+        points_per_second: 600000
+        position: [0.0, 0.0, 2.5]
+        
+      radar:
+        count: 3
+        model: continental_ars430
+        horizontal_fov: 30
+        vertical_fov: 30
+        range: 200.0          # meters
+        positions:
+          - [2.5, 0.0, 0.5]   # Front
+          - [2.0, -0.8, 0.5]  # Front left corner
+          - [2.0, 0.8, 0.5]   # Front right corner
+    
+    # Physics Settings
+    physics:
+      substeps: 10             # PhysX substeps
+      max_substep_delta: 0.01
+      enable_ccd: true         # Continuous collision detection
+      
+    # Weather Conditions
+    weather:
+      clear: 0.4              # Probability weights
+      cloudy: 0.3
+      rain: 0.2
+      fog: 0.1
+      
+  # SUMO Configuration
+  sumo:
+    enabled: true
+    sumo_home: /usr/share/sumo  # SUMO installation directory
+    config_file: config/sumo/default.sumocfg
+    gui_enabled: false          # Run in headless mode
+    
+    # Network Generation
+    network_generator:
+      type: grid               # Network topology
+      junction_type: traffic_light
+      edge_length: 200         # meters
+      lane_count: 3
+      max_speed: 50           # km/h
+      
+    # Traffic Generation
+    traffic:
+      vehicle_types:
+        - id: passenger
+          length: 4.5
+          max_speed: 50
+          probability: 0.7
+        - id: bus
+          length: 12.0
+          max_speed: 40
+          probability: 0.1
+        - id: truck
+          length: 8.0
+          max_speed: 40
+          probability: 0.2
+          
+    # TraCI Configuration
+    traci:
+      port: 8813
+      num_retries: 10
+      label: apacc_validation
+      
+  # MATLAB Configuration
+  matlab:
+    enabled: true
+    engine_path: /usr/local/MATLAB/R2023b
+    startup_options:
+      - -nodisplay            # Headless mode
+      - -nosplash            # Skip splash screen
+      - -nodesktop           # No GUI
+      
+    # Required Toolboxes
+    required_toolboxes:
+      - Fuzzy Logic Toolbox
+      - Optimization Toolbox
+      - Control System Toolbox
+      - Parallel Computing Toolbox
+      
+    # Custom Functions
+    custom_functions:
+      validation_suite: matlab/validation/run_all_tests.m
+      fuzzy_engine: matlab/fuzzy/type2_fuzzy_engine.m
+      qp_solver: matlab/optimization/custom_qp_solver.m
+      stability_analysis: matlab/control/stability_checks.m
+      
+    # Parallel Configuration
+    parallel:
+      workers: 8              # Parallel pool size
+      cluster_profile: local
+      
+# Data Storage Configuration
+# --------------------------
+# Settings for result storage and analysis
+data_storage:
+  # Primary Storage
+  primary_format: hdf5         # Default storage format
+  compression_level: 9         # Maximum compression
+  chunk_size: [1000, 100]     # Chunk dimensions for large datasets
+  
+  # Backup Storage
+  enable_backup: true
+  backup_formats:
+    - csv                     # Human-readable backup
+    - zarr                    # Cloud-optimized format
+    
+  # Metadata
+  metadata:
+    paper_title: "Quantitative Validation of Artificial Precognition Adaptive Cognised Control"
+    author: "George Frangou"
+    institution: "Cranfield University"
+    doi: "https://doi.org/10.5281/zenodo.8475"
+    date: "2025-01-28"
+    
+# Logging Configuration
+# ---------------------
+logging:
+  level: INFO                  # Default log level
+  file_level: DEBUG           # File logging level
+  console_level: INFO         # Console logging level
+  
+  # Log Formatting
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s"
+  date_format: "%Y-%m-%d %H:%M:%S"
+  
+  # Performance Logging
+  log_performance_every: 100   # Log metrics every N episodes
+  log_gpu_stats: true         # Include GPU utilization
+  log_memory_stats: true      # Include memory usage
+  
+# Resource Limits
+# ---------------
+# Prevent resource exhaustion during long runs
+resource_limits:
+  max_memory_gb: 32           # Maximum RAM usage
+  max_gpu_memory_gb: 8        # Maximum GPU memory
+  max_cpu_percent: 90         # CPU usage limit
+  max_runtime_hours: 48       # Maximum execution time
+  checkpoint_interval: 1000    # Save progress every N episodes
